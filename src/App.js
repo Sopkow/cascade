@@ -77,7 +77,7 @@ function App() {
       setPairedWords((prevPairedWords) => [...prevPairedWords, { ...newPair, color: 'yellow' }]);
       setSelectedWord(null);
     } else if (!isPaired) {
-      // Unpairing words
+      // Deal with unpaired words
       const existingPairIndex = pairedWords.findIndex(pair => (
         pair[language + "Word"].word.index === word.index && pair[language + "Word"].language === language
       ));
@@ -92,7 +92,7 @@ function App() {
     }
   };
   
-
+  //Manage button clicks
   const handleButtonClick = () => {
     if (buttonText === 'GO') {
       setButtonText('GRADE');
@@ -143,7 +143,7 @@ function App() {
       </div>
       {buttonText === 'GO' ? <h3>Click "GO" to start, goodluck!</h3> : <h3>When your done, click "GRADE" to check your score!</h3>}
       <button onClick={handleButtonClick}>{buttonText}</button>
-      {grade !== null && <p>Percentage Correct: {grade.toFixed(2)}%</p>}
+      {grade !== null && <h3>Percentage Correct: {grade.toFixed(2)}%</h3>}
     </div>
   );
 }

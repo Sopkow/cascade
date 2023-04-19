@@ -1,7 +1,26 @@
 # cascade
 Cascade Skills Assessment
 
-Built using Javascript, CSS, Node, Nest, and React.
+Built using Javascript, CSS, Node, and React.
 
-Although my experience and preferences would have typically built a project is this scale with Express, for a Fin-Tech company it would be my reccomendation to use something like Nest for an efficient and scalable web applications, and its clean and modularized architecture pattern makes it easier to build more scalable and easily maintainable applications. Specifically it would be used over something like Express to handle the complex business logic, and it's written in TypeScript, which ensures that the application is reliable and bug-free. Additionally, Nest has built-in features such as middleware and error handling, which can make it easier to build a secure and reliable application. Thus I chose Nest for this to further exemplify my understand of the problems you may currently face as a company, rather than the easiest solution for this problem.
+Disclaimer, had less time than I would have liked as I am flying accross the continent tomorrow and had to tie up a lot of lose ends, but I figured I would submit what I have. 
 
+It still functions perfectly fine, however I admit the files could have easily been seperated into smaller components. 
+
+For a project like this, I would typically use Express due to the simplistic nature, however the use of Nest would be more appropriate for anything related to fintech. Would have loved to do more, but I figured this should at least show you some fullstack work. 
+
+
+If you want to run the container locally:
+
+docker build -t cascadeasses:latest .
+docker run -p 8080:443 cascadeasses:latest
+
+However I have already uploaded it to a CICD pipeline on the google cloud from the docker file if you would prefer to access it there:
+
+https://cascade-uzpjouqq5a-uc.a.run.app/
+
+
+I will be back to work monday April 21st if you would like to see more or get ahold of me.
+
+Cheers,
+Bran
