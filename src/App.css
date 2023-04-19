@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.arrow-container {
+  position: absolute;
+}
+
+.arrow {
+  position: relative;
+  left: 100%;
+  top: -20px;
+  border-top: 10px solid transparent;
+  border-right: 10px solid black;
+  border-bottom: 10px solid transparent;
+}

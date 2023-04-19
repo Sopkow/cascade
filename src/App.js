@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useState, useEffect } from 'react';
 import WordColumn from './WordColumn';
-import WordCard from './WordCard';
-import { useDrag } from 'react-dnd';
 
 const words = [
   { english: 'forest', french: 'forêt' },
@@ -21,67 +17,131 @@ const words = [
 ];
 
 function App() {
-  const [englishWords, setEnglishWords] = useState(words.map((w) => w.english));
-  const [frenchWords, setFrenchWords] = useState(words.map((w) => w.french).sort(() => Math.random() - 0.5));
+  const [selectedWord, setSelectedWord] = useState(null);
+  const [randomizedWords, setRandomizedWords] = useState(words);
+  const [pairedWords, setPairedWords] = useState([]);
+  const [connections, setConnections] = useState([]);
   const [buttonText, setButtonText] = useState('GO');
   const [grade, setGrade] = useState(null);
+
+  //Draw all lines once connection made between two words after getting coordinates
+  const getCoordinates = (element) => {
+    if (!element) {
+      return { x: 0, y: 0 };
+    }
+  
+    const rect = element.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2 + window.pageXOffset,
+      y: rect.top + rect.height / 2 + window.pageYOffset,
+    };
+  };
+
+  const lines = connections.map((connection, index) => {
+      if (connection.englishWord && connection.frenchWord && connection.englishWord.element && connection.frenchWord.element) {
+        const { x: x1, y: y1 } = getCoordinates(connection.englishWord.element);
+        const { x: x2, y: y2 } = getCoordinates(connection.frenchWord.element);
+    
+        return (
+          <line
+            key={index}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke={connection.color}
+            strokeWidth="2"
+            markerEnd="url(#arrow)"
+          />
+        );
+      }
+      return null;
+  });
+
+  // Handle Word Click Function
+  const handleWordClick = (word, language, wordRef) => {
+    const isPaired = pairedWords.some(
+      (pair) => pair[language + "Word"].word.index === word.index && pair.color === 'yellow'
+    );
+  
+    if (selectedWord && selectedWord.language !== language) {
+      // Pairing words
+      const newPair = selectedWord.language === 'english'
+        ? { englishWord: selectedWord, frenchWord: { word, element: wordRef.current } }
+        : { englishWord: { word, element: wordRef.current }, frenchWord: selectedWord };
+  
+      setConnections((prevConnections) => [
+        ...prevConnections.filter((c) => c.color !== 'cyan'),
+        { ...newPair, color: 'yellow' },
+      ]);
+      setPairedWords((prevPairedWords) => [...prevPairedWords, { ...newPair, color: 'yellow' }]);
+      setSelectedWord(null);
+    } else if (!isPaired) {
+      // Unpairing words
+      const existingPairIndex = pairedWords.findIndex(pair => (
+        pair[language + "Word"].word.index === word.index && pair[language + "Word"].language === language
+      ));
+  
+      if (existingPairIndex !== -1) {
+        const updatedPairedWords = [...pairedWords];
+        updatedPairedWords.splice(existingPairIndex, 1);
+        setPairedWords(updatedPairedWords);
+      }
+  
+      setSelectedWord({ word: { text: word.text, index: word.index }, language, element: wordRef.current, color: isPaired ? 'yellow' : 'cyan' });
+    }
+  };
+  
 
   const handleButtonClick = () => {
     if (buttonText === 'GO') {
       setButtonText('GRADE');
       setGrade(null);
-    } else {
-      const correct = englishWords.filter((ew, i) => ew === words.find((w) => w.french === frenchWords[i]).english).length;
-      const percentage = (correct / englishWords.length) * 100;
+      const randomizedEnglish = [...words].sort(() => Math.random() - 0.5);
+      const randomizedFrench = [...words].sort(() => Math.random() - 0.5);
+      setRandomizedWords(randomizedEnglish.map((w, i) => ({ english: w.english, french: randomizedFrench[i].french })));
+    } 
+    else {
+      const correct = connections.filter(
+        (c) => words.find((w) => w.english === c.englishWord).french === c.frenchWord
+      ).length;
+      const percentage = (correct / words.length) * 100;
       setGrade(percentage);
       setButtonText('GO');
     }
   };
 
-  const handleDrop = (index) => {
-    const droppedWord = frenchWords.find((w) => w.isDragging);
-    if (droppedWord) {
-      const newEnglishWords = [...englishWords];
-      newEnglishWords[index] = { ...newEnglishWords[index], french: droppedWord.word };
-      setEnglishWords(newEnglishWords);
-  
-      const newFrenchWords = frenchWords.map((w) => {
-        if (w.word === droppedWord.word) {
-          return { ...w, isDragging: false };
-        }
-        return w;
-      });
-      setFrenchWords(newFrenchWords.filter((w) => w.word !== droppedWord.word));
-    }
-  };
-  
-  
+
+  // Add this useEffect hook inside your component
+  useEffect(() => {
+    console.log('App Updated pairedWords:', pairedWords); /************************************************************************************************************/
+  }, [pairedWords]);
 
   return (
     <div className="App">
       <button onClick={handleButtonClick}>{buttonText}</button>
       {grade !== null && <p>Percentage Correct: {grade.toFixed(2)}%</p>}
-      <DndProvider backend={HTML5Backend}>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <WordColumn words={englishWords} onDrop={() => {}} />
-          <WordColumn words={englishWords} emptySlots onDrop={handleDrop} />
-          <WordColumn
-            words={frenchWords}
-            onDrop={() => {}}
-            onDragEnd={(item, dropResult) => {
-              if (!dropResult) {
-                const newFrenchWords = frenchWords.map((w) => {
-                  if (w.word === item.word) {
-                    return { ...w, isDragging: false };
-                  }
-                  return w;
-                });
-                setFrenchWords(newFrenchWords);
-              }
-            }}
-          />
-        </div>
-      </DndProvider>
+      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <WordColumn
+          words={randomizedWords.map((w) => w.english)}
+          onClick={handleWordClick}
+          selectedWord={selectedWord}
+          language="english"
+          connections={connections}
+          pairedWords={pairedWords}
+        />
+        <WordColumn
+          words={randomizedWords.map((w) => w.french)}
+          onClick={handleWordClick}
+          selectedWord={selectedWord}
+          language="french"
+          connections={connections}
+          pairedWords={pairedWords}
+        />
+        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+          {lines}
+        </svg>
+      </div>
     </div>
   );
 }

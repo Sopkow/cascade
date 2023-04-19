@@ -1,20 +1,9 @@
 import React from 'react';
-import { useDrop } from 'react-dnd';
 import WordCard from './WordCard';
 
-const WordColumn = ({ words, onDrop, emptySlots, onDragEnd }) => {
-    const [{ canDrop, isOver }, drop] = useDrop(() => ({
-        accept: 'WORD',
-        drop: () => ({ name: 'WordColumn' }),
-        collect: (monitor) => ({
-            isOver: monitor.isOver(),
-            canDrop: monitor.canDrop(),
-        }),
-    }));
-
-    const isActive = canDrop && isOver;
-    const backgroundColor = isActive ? 'lightgreen' : 'white'
-  
+const WordColumn = ({ words, onClick, selectedWord, language, connections, pairedWords }) => {
+    
+    //Custom Styling for borders
     const style = {
     border: '1px solid black',
     minHeight: '100px',
@@ -23,32 +12,41 @@ const WordColumn = ({ words, onDrop, emptySlots, onDragEnd }) => {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-  };
-
-  const slotStyle = {
-    border: '1px dashed gray',
-    minHeight: '20px',
-    minWidth: '200px',
-    margin: '5px',
+    position: 'relative',
   };
 
   return (
     <div style={style}>
-      {words.map((word, index) => (
-        <div key={index} style={{ display: 'flex' }}>
-          {!emptySlots && <WordCard word={word} isFrench={!emptySlots} onDragEnd={onDragEnd} />}
-          {emptySlots && (
-            <div
-              style={slotStyle}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                onDrop(index);
-              }}
+      {words.map((word, index) => {
+        //Word pairing state variable, creates yellow highlight when paired
+        const isPaired = pairedWords.some(
+          (pair) =>
+            pair[language + "Word"] &&
+            pair[language + "Word"].word &&
+            pair[language + "Word"].word.index === index &&
+            pair.color === 'yellow'
+        );
+        console.log('WordColumn language:', language, 'index:', index, 'isPaired:', isPaired, 'isSelected:', selectedWord); /************************************************************************************************************/
+        return (
+            <WordCard
+                key={index}
+                word={{ text: word, index }}
+                onClick={onClick}
+                isSelected={
+                    (selectedWord && selectedWord.word && selectedWord.language === language && selectedWord.word.index === index)
+                    ? selectedWord.color
+                    : (
+                        pairedWords.some(pair => (
+                        pair[language + "Word"] && pair[language + "Word"].word.index === index && pair[language + "Word"].language === language
+                        ))
+                        ? "yellow"
+                        : null
+                    )
+                }
+                language={language}
             />
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

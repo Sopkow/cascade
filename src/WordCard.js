@@ -1,33 +1,26 @@
-import React from 'react';
-import { useDrag } from 'react-dnd';
+import React, { useRef } from 'react';
 
-const WordCard = ({ word, isFrench, onDragEnd }) => {
-    const [{ isDragging }, drag] = useDrag(() => ({
-      type: 'WORD',
-      item: { word, isFrench },
-      end: (item, monitor) => {
-        const dropResult = monitor.getDropResult();
-        onDragEnd(item, dropResult);
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }));
+const WordCard = ({ word, language, onClick, isSelected }) => {
+  console.log('WordCard isSelected:', isSelected, 'word:', word); /************************************************************************************************************/
 
+  const wordRef = useRef(null);
+  
   const style = {
     border: '1px solid black',
     padding: '5px',
     margin: '5px',
-    backgroundColor: isFrench ? 'cyan' : 'white',
-    opacity: isDragging ? 0.5 : 1,
+    backgroundColor: isSelected ? (isSelected === 'cyan' ? 'cyan' : 'yellow') : 'white',
   };
 
   return (
-    <div ref={drag} style={style}>
-      {word}
+    <div
+      onClick={() => onClick(word, language, wordRef)}
+      style={style}
+      ref={wordRef}
+    >
+      {word.text}
     </div>
   );
 };
 
 export default WordCard;
-
