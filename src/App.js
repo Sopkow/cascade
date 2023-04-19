@@ -36,7 +36,7 @@ function App() {
       y: rect.top + rect.height / 2 + window.pageYOffset,
     };
   };
-
+  //Connections between paired words
   const lines = connections.map((connection, index) => {
       if (connection.englishWord && connection.frenchWord && connection.englishWord.element && connection.frenchWord.element) {
         const { x: x1, y: y1 } = getCoordinates(connection.englishWord.element);
@@ -63,13 +63,13 @@ function App() {
     const isPaired = pairedWords.some(
       (pair) => pair[language + "Word"].word.index === word.index && pair.color === 'yellow'
     );
-  
+    //Check for selected word exists and its the same language.
     if (selectedWord && selectedWord.language !== language) {
       // Pairing words
       const newPair = selectedWord.language === 'english'
         ? { englishWord: selectedWord, frenchWord: { word, element: wordRef.current } }
         : { englishWord: { word, element: wordRef.current }, frenchWord: selectedWord };
-  
+      
       setConnections((prevConnections) => [
         ...prevConnections.filter((c) => c.color !== 'cyan'),
         { ...newPair, color: 'yellow' },
@@ -120,8 +120,8 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={handleButtonClick}>{buttonText}</button>
-      {grade !== null && <p>Percentage Correct: {grade.toFixed(2)}%</p>}
+      <h1>Welcome to Word Match!</h1>
+      <h3>Click one word, then another to pair it with an <em>alternative language</em> counterpart <em>permenantly!</em></h3>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <WordColumn
           words={randomizedWords.map((w) => w.english)}
@@ -141,6 +141,9 @@ function App() {
           {lines}
         </svg>
       </div>
+      {buttonText === 'GO' ? <h3>Click "GO" to start, goodluck!</h3> : <h3>When your done, click "GRADE" to check your score!</h3>}
+      <button onClick={handleButtonClick}>{buttonText}</button>
+      {grade !== null && <p>Percentage Correct: {grade.toFixed(2)}%</p>}
     </div>
   );
 }
