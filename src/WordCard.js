@@ -1,15 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
-const WordCard = ({ word, language, onClick, isSelected }) => {
-  console.log('WordCard isSelected:', isSelected, 'word:', word); /************************************************************************************************************/
-
+const WordCard = ({ word, language, onClick, pairedWords }) => {
   const wordRef = useRef(null);
-  
+  const [color, setColor] = useState('white');
+
+  useEffect(() => {
+    setColor(pairedWords.some(pair => pair[language + "Word"].word.index === word.index && pair.color === 'yellow') ? 'yellow' : 'white');
+  }, [pairedWords]);
+
   const style = {
     border: '1px solid black',
     padding: '5px',
     margin: '5px',
-    backgroundColor: isSelected ? (isSelected === 'cyan' ? 'cyan' : 'yellow') : 'white',
+    backgroundColor: color,
   };
 
   return (

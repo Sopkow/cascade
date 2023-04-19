@@ -102,14 +102,15 @@ function App() {
       setRandomizedWords(randomizedEnglish.map((w, i) => ({ english: w.english, french: randomizedFrench[i].french })));
     } 
     else {
-      const correct = connections.filter(
-        (c) => words.find((w) => w.english === c.englishWord).french === c.frenchWord
+      const correct = pairedWords.filter(
+        (p) => words.find((w) => w.english === p.englishWord.word.text).french === p.frenchWord.word.text
       ).length;
       const percentage = (correct / words.length) * 100;
       setGrade(percentage);
       setButtonText('GO');
     }
   };
+  
 
 
   // Add this useEffect hook inside your component

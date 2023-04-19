@@ -44,6 +44,7 @@ const WordColumn = ({ words, onClick, selectedWord, language, connections, paire
                     )
                 }
                 language={language}
+                pairedWords={pairedWords}
             />
         );
       })}
