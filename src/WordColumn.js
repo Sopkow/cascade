@@ -9,7 +9,7 @@ const WordColumn = ({ words, onClick, selectedWord, language, pairedWords }) => 
     minHeight: '100px',
     minWidth: '100px',
     padding: '10px',
-    marginTop: '50px',
+    marginTop: '25px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

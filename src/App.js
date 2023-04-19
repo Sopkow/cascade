@@ -121,7 +121,7 @@ function App() {
   return (
     <div className="App">
       <h1>Welcome to Word Match!</h1>
-      <h3>Click one word, then another to pair it with an <em>alternative language</em> counterpart <em>permenantly!</em></h3>
+      <h3>Click one word, then another to pair it with an <em>alternative language</em> counterpart <em>permanently!</em></h3>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <WordColumn
           words={randomizedWords.map((w) => w.english)}
