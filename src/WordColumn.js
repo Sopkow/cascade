@@ -1,22 +1,24 @@
 import React from 'react';
 import WordCard from './WordCard';
 
-const WordColumn = ({ words, onClick, selectedWord, language, connections, pairedWords }) => {
+const WordColumn = ({ words, onClick, selectedWord, language, pairedWords }) => {
     
     //Custom Styling for borders
     const style = {
     border: '1px solid black',
     minHeight: '100px',
-    minWidth: '200px',
+    minWidth: '100px',
     padding: '10px',
+    marginTop: '100px',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     position: 'relative',
   };
 
   return (
     <div style={style}>
+      <h1>{language.charAt(0).toUpperCase()+language.slice(1)} Words</h1>
       {words.map((word, index) => {
         //Word pairing state variable, creates yellow highlight when paired
         const isPaired = pairedWords.some(

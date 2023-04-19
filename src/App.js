@@ -128,7 +128,6 @@ function App() {
           onClick={handleWordClick}
           selectedWord={selectedWord}
           language="english"
-          connections={connections}
           pairedWords={pairedWords}
         />
         <WordColumn
@@ -136,7 +135,6 @@ function App() {
           onClick={handleWordClick}
           selectedWord={selectedWord}
           language="french"
-          connections={connections}
           pairedWords={pairedWords}
         />
         <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
